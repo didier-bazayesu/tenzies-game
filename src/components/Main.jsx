@@ -13,8 +13,10 @@ function Main() {
         setDice(generateAllNumber());
 
     }
+
+  
     
-    let diceButtons = dice.map(elem => (<Die key={elem.id} value={elem.value} isHeld= {elem.isHeld}/>))
+    let diceButtons = dice.map((elem, index )=> (<Die key={elem.id} index={index} value={elem.value}/>))
 
    console.log(diceButtons);
   return (
