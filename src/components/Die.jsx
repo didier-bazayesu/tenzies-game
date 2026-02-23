@@ -1,13 +1,11 @@
 import React from 'react'
 
-function Die({id,value,isHeld,index}) {
+function Die({id,value,isHeld,handleSingleButton}) {
     const style = {
-        backgroundColor : isHeld ? 'green' : "white"
+        backgroundColor : isHeld ? '#59e391' : "white"
     }
 
-    function handleSingleButton(singleId){
-      console.log(singleId)
-    } 
+
    
   return (
     <button
@@ -21,7 +19,7 @@ function Die({id,value,isHeld,index}) {
         '
         key={id}
         style={style}
-        onClick={()=>{handleSingleButton(index)}}
+        onClick={handleSingleButton}
         >
          {value}
     </button>
