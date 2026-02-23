@@ -1,40 +1,34 @@
 import React, { useState } from 'react'
+import { nanoid } from 'nanoid';
+import Die from './Die';
+
 
 function Main() {
-    let[dice]= useState(generateAllNumber())
+    let[dice,setDice]= useState(generateAllNumber())
     function generateAllNumber (){
-        let array = []
-        for(let i=1 ; i<=10 ;i++ ) {
-             let data = Math.floor(Math.random()*6) 
-             if(data == 0) data = 1;
-             array.push(data);
-        }
-        console.log("rendered")
-        return array
-        
+        return new Array(10).fill(0).map(()=> ({value:Math.floor(Math.random() * 6 +1), isHeld : false,id : nanoid()})); 
     }
    
+    function handleClick(){
+        setDice(generateAllNumber());
+
+    }
+    
+    let diceButtons = dice.map(elem => (<Die key={elem.id} value={elem.value} isHeld= {elem.isHeld}/>))
+
+   console.log(diceButtons);
   return (
     <section className="bg-black w-full h-screen p-5">
 
       <div className="bg-gray-200 w-full h-full flex justify-center items-center rounded-xl flex-col gap-y-5">
           <div className='grid grid-cols-5 grid-rows-2 gap-5'>
-                {dice.map((elem,index)=> 
-                    <button 
-                        key={index}
-                        className='
-                        hover:bg-amber-400
-                        hover:cursor-pointer
-                        rounded-xl
-                        w-16 h-16
-                        text-2xl
-                        shadow-md
-                        '>
-                    {elem}</button>
-                )}
+                {diceButtons}  
             </div>
 
-            <button className='bg-blue-700 text-center px-5 py-1.5 rounded-sm text-white cursor-pointer'>Roll</button>
+            <button  
+             className='bg-[#5035ff] text-center px-5 py-1.5 rounded-sm text-white cursor-pointer'
+             onClick={handleClick}
+            >Roll</button>
         </div>
     </section>
   )
