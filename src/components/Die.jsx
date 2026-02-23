@@ -1,14 +1,18 @@
 import React from 'react'
 
-function Die({id,value,isHeld}) {
+function Die({id,value,isHeld,index}) {
     const style = {
         backgroundColor : isHeld ? 'green' : "white"
     }
+
+    function handleSingleButton(singleId){
+      console.log(singleId)
+    } 
    
   return (
     <button
         className='
-        hover:bg-amber-400
+        hover:bg-amber-500
         hover:cursor-pointer
         rounded-xl
         w-16 h-16
@@ -17,6 +21,7 @@ function Die({id,value,isHeld}) {
         '
         key={id}
         style={style}
+        onClick={()=>{handleSingleButton(index)}}
         >
          {value}
     </button>
