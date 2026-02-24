@@ -1,44 +1,57 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { nanoid } from 'nanoid';
 import Die from './Die';
-
+import SuccessMessage from './SuccessMessage';
 
 function Main() {
  
-    let[dice,setDice]= useState(generateAllNumber())
+    let[dice,setDice]= useState(()=>generateAllNumber())
  
     //check won
-
     const firstValue = dice[0].value;
     const allSameValue = dice.every(die => die.value === firstValue);
     const gameWon = dice.every(die => die.isHeld) && allSameValue;
-   
+    const buttonRef = useRef();
+    const [showMessage, setShowMessage] = useState(false);
 
+    useEffect(() => {
+        if (gameWon) {
+            buttonRef.current.focus();
+            setShowMessage(true);
+        }
+    }, [gameWon])
 
     function generateAllNumber (){
+        console.log("rendered")
         return new Array(10).fill(0).map(()=> ({value:Math.floor(Math.random() * 6 +1), isHeld : false,id : nanoid()})); 
     }
    
     function handleClick(){
-        setDice(prev=> prev.map((elem)=> {
-            return elem.isHeld ? elem : {...elem , value : Math.floor(Math.random()* 6 +1)}
-        }));
+        if(!gameWon){
+            setDice(prev=> prev.map((elem)=> {
+                return elem.isHeld ? elem : {...elem , value : Math.floor(Math.random()* 6 +1)}
+            }));
 
+        }else {
+            setDice(generateAllNumber());
+        }
     }
     
     function handleSingleButton(singleId){
-        
-        setDice(prev=> prev.map((elem,index)=> index == singleId ? {...elem , isHeld: !elem.isHeld} : elem))
-
+      setDice(prev=> prev.map((elem,index)=> index == singleId ? {...elem , isHeld: !elem.isHeld} : elem))
     } 
 
-  
-    
+    function successMessage(){
+             setShowMessage(false);
+            setDice(generateAllNumber());
+    }
+
     let diceButtons = dice.map((elem, index )=> (<Die key={elem.id} handleSingleButton={()=>handleSingleButton(index)} value={elem.value} isHeld={elem.isHeld}/>))
 
-   
   return (
     <section className="bg-black w-full h-screen p-5">
+
+          <SuccessMessage   successMessage={successMessage} showMessage={showMessage}/>
 
       <div className="bg-gray-200 w-full h-full flex justify-evenly items-center rounded-xl flex-col gap-y-5">
             <h1 className="text-xl font-bold">Tenzies</h1>
@@ -47,10 +60,10 @@ function Main() {
                 {diceButtons}  
             </div>
 
-            <button  
+            <button  ref={buttonRef}
              className='bg-[#5035ff] text-center px-5 py-1.5 rounded-sm text-white cursor-pointer'
              onClick={handleClick}
-            >{ gameWon? "Game Over" : "Roll"}</button>
+            >{ gameWon? "New Game" : "Roll"}</button>
         </div>
     </section>
   )
