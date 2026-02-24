@@ -1,28 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { nanoid } from 'nanoid';
 import Die from './Die';
 
 
 function Main() {
  
-    let[dice,setDice]= useState(generateAllNumber())
+    let[dice,setDice]= useState(()=>generateAllNumber())
  
     //check won
 
     const firstValue = dice[0].value;
     const allSameValue = dice.every(die => die.value === firstValue);
     const gameWon = dice.every(die => die.isHeld) && allSameValue;
+    const buttonRef = useRef();
    
 
 
+    useEffect(() => {
+        if (gameWon) {
+            buttonRef.current.focus();
+        }
+    }, [gameWon])
+
+
     function generateAllNumber (){
+        console.log("rendered")
         return new Array(10).fill(0).map(()=> ({value:Math.floor(Math.random() * 6 +1), isHeld : false,id : nanoid()})); 
     }
    
     function handleClick(){
-        setDice(prev=> prev.map((elem)=> {
-            return elem.isHeld ? elem : {...elem , value : Math.floor(Math.random()* 6 +1)}
-        }));
+        if(!gameWon){
+            setDice(prev=> prev.map((elem)=> {
+                return elem.isHeld ? elem : {...elem , value : Math.floor(Math.random()* 6 +1)}
+            }));
+
+        }else {
+            setDice(generateAllNumber());
+        }
 
     }
     
@@ -47,7 +61,7 @@ function Main() {
                 {diceButtons}  
             </div>
 
-            <button  
+            <button  ref={buttonRef}
              className='bg-[#5035ff] text-center px-5 py-1.5 rounded-sm text-white cursor-pointer'
              onClick={handleClick}
             >{ gameWon? "Game Over" : "Roll"}</button>
